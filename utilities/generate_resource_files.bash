@@ -1,7 +1,7 @@
 # generate resource/gencode.v22.gene.ranges
 # Comprehensive gene annotation (Gencode v22, hg38)
 # get gene info from GTF file (gencode v22)
-awk '$3 == "gene" { print $1,$4,$5,$7,$10,$16,$12 }' path_to_file/gencode.v22.annotation.gtf | tr -d ";\""  > ../resource/gencode.v22.gene.ranges
+awk '$3 == "gene" { print $1,$4,$5,$7,$10,$16,$12 }' path_to_file/gencode.v22.annotation.gtf | tr -d ";\""  > gencode.v22.gene.ranges
 
 # generate resource/fraietta_TPM.tsv
 # extract gene sizes from gencode.v22 gtf
@@ -16,7 +16,7 @@ Rscript "fraietta_TPM.R"
 Rscript "generate_gencode_v22_gene_TPM_bed.R"
 
 # make 1 Mb regions
-bedtools makewindows -g path_to_file/GRCh38.p13/STAR/chrNameLength.txt -w 1000000 | grep '^chr' > ../intermediate/GRCh38.p13_1Mb.bed
+bedtools makewindows -g path_to_file/GRCh38.p13/STAR/chrNameLength.txt -w 1000000 | grep '^chr' > GRCh38.p13_1Mb.bed
 
 # Sum gene TPMs within 1 Mbs
-bedtools map -o sum -a resource/GRCh38.p13_1Mb.bed -b resource/gencode.v22.gene.TPM.bed > resource/GRCh38.p13_1Mb_geneTPM.bed
+bedtools map -o sum -a GRCh38.p13_1Mb.bed -b gencode.v22.gene.TPM.bed > GRCh38.p13_1Mb_geneTPM.bed
