@@ -1,7 +1,7 @@
 # Script to calculate Gene expression (ex-vivo CD3+ cells)
 
 # read the sizes
-gencode.v22.gene.sizes <- read.table("intermediate/gencode.v22.gene.sizes.tsv", sep = "\t", header = T, stringsAsFactors = F)
+gencode.v22.gene.sizes <- read.table("resource/gencode.v22.gene.sizes.tsv", sep = "\t", header = T, stringsAsFactors = F)
 
 # from [Fraietta *et al*., 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6117613/)
 fname <- "resource/NIHMS981956-supplement-Supplementary_Table_5.xlsx"
