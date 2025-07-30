@@ -1,3 +1,4 @@
+# script to extract gene sizes from gencode.v22 gtf
 #!/usr/bin/R
 library(GenomicFeatures)
 library(pander)
