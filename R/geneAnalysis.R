@@ -84,27 +84,9 @@ suppressWarnings( {
 	gencode.v22.genes$oncoPlex <- factor(gencode.v22.genes$oncoPlex, levels = c("Oncogene", "Other"))
 	
 	# Gene expression (ex-vivo CD3+ cells)
-	# from [Fraietta *et al*., 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6117613/)
-	fname <- "resource/NIHMS981956-supplement-Supplementary_Table_5.xlsx"
-	# if (!file.exists(fname)) {
-	# 	download.file(
-	# 		"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6117613/bin/NIHMS981956-supplement-Supplementary_Table_5.xlsx",
-	# 		destfile = fname, mode = "wb"
-	# 	)
-	# }
-	
-	fraietta_gene_counts <- openxlsx::read.xlsx(fname, sheet = 3, startRow = 4, colNames = F)
-	colnames(fraietta_gene_counts)[1] <- "gene_name"
-	fraietta_gene_counts <- fraietta_gene_counts[ fraietta_gene_counts$gene_name %in% gencode.v22.genes$gene_name, ]
-	fraietta_gene_counts <- merge(
-		fraietta_gene_counts,
-		data.frame(mcols(gencode.v22.genes)[, c("ensembl_id", "gene_name")]),
-		by = "gene_name", all.x = T, all.y = F, sort = F
-	) # some gene_names have more than one id - some duplication occurs
-	
-	# Oncogene comparisons within expression bins
 	fraietta_TPM <- read.table("resource/fraietta_TPM.tsv", sep = "\t", header = T, stringsAsFactors = F)
 	
+	# Oncogene comparisons within expression bins
 	gencode.v22.geneDF <- merge(
 		data.frame(mcols(gencode.v22.genes)), fraietta_TPM[, c("gene_name", "mean_TPM")],
 		by = "gene_name", all.x = T, all.y = F, sort = F
