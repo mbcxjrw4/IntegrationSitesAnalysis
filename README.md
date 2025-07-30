@@ -1,2 +1,6 @@
 # IntegrationSitesAnalysis
-Comparison of cell therapy manufacturing product’s viral intergration sites to public data
+Bioinformatics pipeline for the comparison of cell therapy manufacturing product’s viral intergration sites to public data
+
+We test drug products and post-infusion samples (collected 1 year post infusion or beyond) from the same patients to assess the repertoire of LV vector integration sites in both. The polyclonality of the post-infusion sample shows absence of LV vector-related oncogenic transformation, whereas the data from the drug product shows the genomic tropism of the vector. Together, these data support the safety of the product in regard to genotoxicity.
+
+More specifically, risk assessment by an external consultant came with the following recommendation: *"Review available data with respect to integration preference from any clinical samples that have undergone detailed analysis as part of clonality assessments and confirm that integration patterns in SPEAR T cell products show a similar preference for integration to published data, in regions of open chromatin, high GC content, and transcriptionally active genes and that integration is highly polyclonal, with no evidence for favouring integration near specific reported oncogenes of concern, such as LMO2
