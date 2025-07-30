@@ -1,2 +1,3 @@
 # wgEncodeRegDnaseClustered.txt.gz
 # table schema: https://genome.ucsc.edu/cgi-bin/hgTables?db=hg38&hgta_group=regulation&hgta_track=wgEncodeRegDnaseClustered&hgta_table=wgEncodeRegDnaseClustered&hgta_doSchema=describe+table+schema
+# "http://hgdownload.cse.ucsc.edu/goldenpath/hg38/database/wgEncodeRegDnaseClustered.txt.gz"
