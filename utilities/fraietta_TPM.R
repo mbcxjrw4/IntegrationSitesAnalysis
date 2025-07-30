@@ -1,7 +1,7 @@
 # Script to calculate Gene expression (ex-vivo CD3+ cells)
 
 # read the sizes
-gencode.v22.gene.sizes <- read.table("resource/gencode.v22.gene.sizes.tsv", sep = "\t", header = T, stringsAsFactors = F)
+gencode.v22.gene.sizes <- read.table("gencode.v22.gene.sizes.tsv", sep = "\t", header = T, stringsAsFactors = F)
 
 # from [Fraietta *et al*., 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6117613/)
 fname <- "resource/NIHMS981956-supplement-Supplementary_Table_5.xlsx"
@@ -38,4 +38,4 @@ TPM <- apply(RPK, 2, function(x) {x / (sum(x)/1000000)})
 fraietta_gene_counts$mean_TPM <- apply( TPM, 1, function(x) round(mean(x, na.rm = T), 3) )
 fraietta_TPM <- fraietta_gene_counts[ , c("ensembl_id", "gene_name", "gene_exon_size", "mean_TPM")]
 # save the table
-write.table(fraietta_TPM, "intermediate/fraietta_TPM.tsv", sep = "\t", col.names = T, row.names = F, quote = F, na = "")
+write.table(fraietta_TPM, "fraietta_TPM.tsv", sep = "\t", col.names = T, row.names = F, quote = F, na = "")
