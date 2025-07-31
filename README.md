@@ -1,6 +1,30 @@
 # IntegrationSitesAnalysis
-Bioinformatics pipeline for the comparison of cell therapy manufacturing product’s viral intergration sites to public data
+🔬 Overview
+This pipeline analyses lentiviral vector (LV) integration sites from cell therapy drug products and post-infusion samples, focusing on genotoxicity risk assessment. It performs a comprehensive comparison with public datasets and evaluates safety based on:
 
-We test drug products and post-infusion samples (collected 1 year post infusion or beyond) from the same patients to assess the repertoire of LV vector integration sites in both. The polyclonality of the post-infusion sample shows absence of LV vector-related oncogenic transformation, whereas the data from the drug product shows the genomic tropism of the vector. Together, these data support the safety of the product in regard to genotoxicity.
+Insertion site sequence preference (sequence logo analysis)
 
-More specifically, risk assessment by an external consultant came with the following recommendation: *"Review available data with respect to integration preference from any clinical samples that have undergone detailed analysis as part of clonality assessments and confirm that integration patterns in T cell products show a similar preference for integration to published data, in regions of open chromatin, high GC content, and transcriptionally active genes and that integration is highly polyclonal, with no evidence for favouring integration near specific reported oncogenes of concern, such as LMO2
+Gene-level integration patterns and insertion frequency
+
+Overlap with open chromatin regions
+
+Analysis of GC content at integration sites
+
+Clonality assessment of vector-containing T cells
+
+The output includes statistical summaries and a complete safety report for regulatory or scientific review.
+
+📁 Directory Structure
+IntegrationSitesAnalysis/
+
+├── R/                         # R scripts for each analysis module
+
+├── config/                    # Configuration file (YAML)
+
+├── input/                     # Input integration site data
+
+├── resource/                  # Reference files (genes, chromatin, GC, etc.)
+
+├── utilities/                 # Supporting scripts for data prep
+
+└── protocol.sh                # Driver script to execute the full pipeline
