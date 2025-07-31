@@ -1,5 +1,6 @@
 # IntegrationSitesAnalysis
-🔬 Overview
+---
+## 🔬 Overview
 This pipeline analyses lentiviral vector (LV) integration sites from cell therapy drug products and post-infusion samples, focusing on genotoxicity risk assessment. It performs a comprehensive comparison with public datasets and evaluates safety based on:
 
 Insertion site sequence preference (sequence logo analysis)
@@ -14,7 +15,9 @@ Clonality assessment of vector-containing T cells
 
 The output includes statistical summaries and a complete safety report for regulatory or scientific review.
 
-📁 Directory Structure
+---
+
+## 📁 Directory Structure
 IntegrationSitesAnalysis/
 
 ├── R/                         # R scripts for each analysis module
