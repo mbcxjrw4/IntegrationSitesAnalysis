@@ -18,16 +18,10 @@ This pipeline analyses lentiviral vector (LV) integration sites from cell therap
 ---
 
 ## 📁 Directory Structure
-IntegrationSitesAnalysis/
-
-├── R/                         # R scripts for each analysis module
-
-├── config/                    # Configuration file (YAML)
-
-├── input/                     # Input integration site data
-
-├── resource/                  # Reference files (genes, chromatin, GC, etc.)
-
-├── utilities/                 # Supporting scripts for data prep
-
+IntegrationSitesAnalysis/ \
+├── R/                         # R scripts for each analysis module \
+├── config/                    # Configuration file (YAML) \
+├── input/                     # Input integration site data \
+├── resource/                  # Reference files (genes, chromatin, GC, etc.) \
+├── utilities/                 # Supporting scripts for data prep \
 └── protocol.sh                # Driver script to execute the full pipeline
