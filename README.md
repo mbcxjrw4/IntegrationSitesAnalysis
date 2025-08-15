@@ -11,7 +11,7 @@ This pipeline analyses lentiviral vector (LV) integration sites from cell therap
 
 ---
 
-## 📁 Directory Structure
+## 📁 Project Structure
 IntegrationSitesAnalysis/ \
 ├── R/                         # R scripts for each analysis module \
 ├── config/                    # Configuration file (YAML) \
