@@ -1,8 +1,7 @@
 # config/libraries.R
 
 required_packages <- c(
-  "ggplot2", "ggseqlogo", "data.table", "patchwork", "GenomicRanges", "GenomicFeatures", "rtracklayer",
-  "openxlsx", "gridExtra"
+  "ggplot2", "ggseqlogo", "data.table", "patchwork", "GenomicRanges", "GenomicFeatures", "rtracklayer", "openxlsx", "gridExtra"
 )
 
 for (pkg in required_packages) {
