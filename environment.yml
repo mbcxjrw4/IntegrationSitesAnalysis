@@ -8,7 +8,6 @@ channels:
 dependencies:
   # Core languages
   - r-base=4.2        # or whichever R version you are using
-  - python=3.10       # if you also use any Python scripts / utilities
 
   # R packages from Bioconda / Conda / CRAN
   - bioconductor-genomicranges
