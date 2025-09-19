@@ -1,0 +1,10 @@
+patient_id: "PATIENT_001"
+genome_fasta: "/home/user/path_to_genome/GRCh38.p13.genome.fa"
+resources:
+  gene_ranges: "resource/gencode.v22.gene.ranges"
+  tpm: "resource/fraietta_TPM.tsv"
+  dnase: "resource/wgEncodeRegDnaseClustered.txt.gz"
+  bed: "resource/GRCh38.p13_1Mb_geneTPM.bed"
+paths:
+  intermediate: "intermediate"
+  output: "results"
