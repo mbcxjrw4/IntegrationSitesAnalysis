@@ -1,23 +1,20 @@
 name: integration_sites_analysis
-
 channels:
   - conda-forge
   - bioconda
   - defaults
-
 dependencies:
-  # Core languages
-  - r-base=4.2        # or whichever R version you are using
-
-  # R packages from Bioconda / Conda / CRAN
+  - python=3.10
+  - r-base=4.2
+  - samtools
+  - bedtools
+  - bioconductor-biostrings
   - bioconductor-genomicranges
   - bioconductor-rtracklayer
   - bioconductor-chipseeker
-  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knownGene
   - bioconductor-org.hs.eg.db
   - bioconductor-bsgenome.hsapiens.ucsc.hg38
-  - bioconductor-biostrings
-
   - r-ggplot2
   - r-dplyr
   - r-data.table
@@ -27,17 +24,4 @@ dependencies:
   - r-optparse
   - r-rmarkdown
   - r-knitr
-
-  # System / other tools
-  - bedtools
-  - samtools            # if needed for FASTA manipulations
-  - wget                # for downloading public datasets
-  - curl
-
-  # Optionally, for motif discovery (if you use external tools)
-  - meme                 # if you want to call MEME suite from within conda
-  - homer                # if available via conda-forge or bioconda
-
-# Optional: pip section if you have some pip-only packages
-#  - pip:
-#    - some_python_package
+  - meme  # optional
