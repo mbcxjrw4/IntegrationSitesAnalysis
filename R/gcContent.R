@@ -12,7 +12,7 @@ option_list <- list(
   make_option("--gc", type="character", help="GC content file"),
   make_option("--out", type="character", help="Output TSV"),
   make_option("--plot", type="character", help="Output plot path"),
-  make_option("--save", type="character", help="Updated RDS")
+  make_option("--update", type="character", help="Updated ISGR RDS")
 )
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -86,6 +86,6 @@ if (!file.exists(opt$plot)) {
 }
 	
 # Save IS GRanges object
-saveRDS(IS.GR, file = paste0(opt$save, "ISGR.rds"))
+saveRDS(IS.GR, file = opt$update)
 
 message("GC content analysis complete ✅")
