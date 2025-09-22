@@ -66,7 +66,7 @@ process SequenceLogo {
         --minus ${params.intermediate}/20bp.minus.fa \
         --is ${is_csv} \
         --output ${params.outdir}/plots/logo20bp.png \
-        --output_csv ${params.intermediate}/IS.updated.csv
+        --update ${params.intermediate}/IS.updated.csv
     """
 }
 
