@@ -10,7 +10,8 @@ option_list <- list(
   make_option("--plus", type="character", help="20bp plus fasta"),
   make_option("--minus", type="character", help="20bp minus fasta"),
   make_option("--is", type="character", help="Integration site CSV"),
-  make_option("--output", type="character", help="Output plot PNG")
+  make_option("--output", type="character", help="Output plot PNG"),
+  make_option("--update", type="character", help="Update IS.csv")
 )
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -109,6 +110,6 @@ if (!file.exists(opt$output)) {
 }
 	
 # update IS file
-data.table::fwrite(IS, file = opt$is)
+data.table::fwrite(IS, file = opt$update)
 
 message("Information content analysis complete ✅")
