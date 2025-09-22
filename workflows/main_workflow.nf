@@ -1,16 +1,24 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 
-// Load config params
+// ----------------------
+// Parameters
+// ----------------------
+params.config_file   = "config/config.yaml"
 params.input         = "input/intSites.tsv"
 params.outdir        = "results"
 params.intermediate  = "intermediate"
 params.genome_fasta  = "${HOME}/path_to_genome/GRCh38.p13.genome.fa"
-params.resources     = "resource"
 params.report_rmd    = "report.Rmd"
 
+// ----------------------
 // Channels
+// ----------------------
 Channel.fromPath(params.input).set { raw_input }
+
+// ----------------------
+// Processes
+// ----------------------
 
 // Step 1: Data preparation
 process DataReadInAndPreparation {
@@ -28,9 +36,9 @@ process DataReadInAndPreparation {
     script:
     """
     Rscript R/dataReadInAndPreparation.R \
-        --patient_id config/variables.R \
         --input ${raw_data} \
-        --outdir ${params.intermediate}
+        --outdir ${params.intermediate} \
+        --config ${params.config_file}
     """
 }
 
@@ -40,9 +48,9 @@ process SequenceLogo {
     conda 'environment.yml'
 
     input:
-    path plus_region from DataReadInAndPreparation.out.collect().map{ it[0] }
-    path minus_region from DataReadInAndPreparation.out.collect().map{ it[1] }
-    path is_csv from DataReadInAndPreparation.out.collect().map{ it[2] }
+    path plus_region
+    path minus_region
+    path is_csv
 
     output:
     path "logo20bp.png"
@@ -67,7 +75,7 @@ process GeneAnalysis {
     conda 'environment.yml'
 
     input:
-    path is_csv from SequenceLogo.out.collect().map{ it[1] }
+    path is_csv
 
     output:
     path "IS_gene.png"
@@ -77,8 +85,7 @@ process GeneAnalysis {
     """
     Rscript R/geneAnalysis.R \
         --is ${is_csv} \
-        --genes ${params.resources}/gencode.v22.gene.ranges \
-        --tpm ${params.resources}/fraietta_TPM.tsv \
+        --config ${params.config_file} \
         --plot ${params.outdir}/plots/IS_gene.png \
         --out ${params.intermediate}/ISGR.rds
     """
@@ -90,7 +97,7 @@ process OpenChromatin {
     conda 'environment.yml'
 
     input:
-    path isgr_rds from GeneAnalysis.out.collect().map{ it[1] }
+    path isgr_rds
 
     output:
     path "IS_dnase.png"
@@ -101,7 +108,7 @@ process OpenChromatin {
     """
     Rscript R/openChromatin.R \
         --isgr ${isgr_rds} \
-        --dnase ${params.resources}/wgEncodeRegDnaseClustered.txt.gz \
+        --config ${params.config_file} \
         --plot ${params.outdir}/plots/IS_dnase.png \
         --out ${params.intermediate}
     """
@@ -113,8 +120,8 @@ process GCContent {
     conda 'environment.yml'
 
     input:
-    path isgr_rds from OpenChromatin.out.collect().map{ it[1] }
-    path region from OpenChromatin.out.collect().map{ it[2] }
+    path isgr_rds
+    path region
 
     output:
     path "GC_content.png"
@@ -144,7 +151,7 @@ process Clonality {
     conda 'environment.yml'
 
     input:
-    path isgr_rds from GCContent.out.collect().map{ it[2] }
+    path isgr_rds
 
     output:
     path "IS_clonality.png"
@@ -154,7 +161,7 @@ process Clonality {
     """
     Rscript R/clonality.R \
         --isgr ${isgr_rds} \
-        --bed ${params.resources}/GRCh38.p13_1Mb_geneTPM.bed \
+        --config ${params.config_file} \
         --plot ${params.outdir}/plots/IS_clonality.png \
         --out ${params.outdir}/clonalityData.tsv
     """
@@ -166,7 +173,7 @@ process Report {
     conda 'environment.yml'
 
     input:
-    path clonality_data from Clonality.out.collect().map{ it[1] }
+    path clonality_data
 
     output:
     path "report.html"
@@ -177,9 +184,11 @@ process Report {
     """
 }
 
-// Workflow
+// ----------------------
+// Workflow definition
+// ----------------------
 workflow {
-    raw_input | DataReadInAndPreparation \
+    DataReadInAndPreparation(raw_input) \
         | SequenceLogo \
         | GeneAnalysis \
         | OpenChromatin \
@@ -187,3 +196,4 @@ workflow {
         | Clonality \
         | Report
 }
+
