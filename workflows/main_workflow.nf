@@ -112,7 +112,7 @@ process OpenChromatin {
         --isgr ${isgr_rds} \
         --config ${params.config_file} \
         --plot ${params.outdir}/plots/IS_dnase.png \
-        --out ${params.intermediate}
+        --save ${params.intermediate}
     """
 }
 
