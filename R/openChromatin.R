@@ -10,7 +10,7 @@ option_list <- list(
   make_option(c("-c", "--config"), type="character", default="config/config.yaml"),
   make_option("--isgr", type="character", help="ISGR RDS"),
   make_option("--plot", type="character", help="Output plot"),
-  make_option("--out", type="character", help="Output directory")
+  make_option("--save", type="character", help="Output directory")
 )
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -26,8 +26,8 @@ message("Running open chromatin analysis...")
 if (!is.null(opt$isgr)) {
   message("Input file: ", opt$isgr)
 }
-if (!is.null(opt$out)) {
-  message("Output file/dir: ", opt$out)
+if (!is.null(opt$save)) {
+  message("Output file/dir: ", opt$save)
 }
 if (!is.null(opt$plot)) {
   message("Plot path: ", opt$plot)
@@ -80,12 +80,12 @@ if (!file.exists(opt$plot)) {
 }
 	
 # Save IS GRanges object
-saveRDS(IS.GR, file = opt$isgr)
+saveRDS(IS.GR, file = paste0(opt$save, "/ISGR.rds"))
 	
 # Calculate GC content in 1 kb bins
-if (!file.exists(file.path(opt$out, "1kb.region"))) {
+if (!file.exists(paste0(opt$out, "/1kb.region"))) {
 	regions.1kb <- paste0(as.character(seqnames(IS.GR)), ":", as.integer(start(IS.GR))-499, "-",  as.integer(end(IS.GR))+500 )
-	writeLines(regions.1kb, file.path(opt$out, "1kb.region"))
+	writeLines(regions.1kb, paste0(opt$out, "/1kb.region"))
 }
 
 message("Open chromatin analysis complete ✅")
