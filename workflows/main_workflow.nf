@@ -80,6 +80,7 @@ process GeneAnalysis {
     output:
     path "IS_gene.png"
     path "ISGR.rds"
+    path "geneData.tsv"
 
     script:
     """
