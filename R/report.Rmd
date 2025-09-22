@@ -55,7 +55,7 @@ add2meta <- function(fileMeta, fname, description) {
     )
 	return(fileMeta)
 }
-source("../config/variables.R")
+source("config/load_config.R")
 ```
 
 ::: {.tabset}
