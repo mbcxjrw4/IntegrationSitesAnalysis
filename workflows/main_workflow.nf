@@ -79,8 +79,8 @@ process GeneAnalysis {
     path is_csv from SequenceLogo.out.is_csv_updated
 
     output:
-    path "IS_gene.png",  emit:gene_plot
-    path "ISGR.rds",     emit: isgr_rds
+    path "IS_gene.png",  emit: gene_plot
+    path "ISGR.initial.rds", emit: isgr_rds
     path "geneData.tsv", emit: genedata_tsv
 
     script:
@@ -104,7 +104,7 @@ process OpenChromatin {
 
     output:
     path "IS_dnase.png", emit: is_dnase_plot
-    path "ISGR.updated.rds",     emit: isge_rds_updated
+    path "ISGR.openChromatin.rds", emit: isge_rds_updated
     path "1kb.region",   emit: 1kb_region
 
     script:
@@ -129,7 +129,7 @@ process GCContent {
     output:
     path "GC_content.png",          emit:ge_plot
     path "integrationSiteData.tsv", emit:is_data_tsv
-    path "ISGR.updated2.rds",                emit: isgr_rds_updated2
+    path "ISGR.gcContent.rds",      emit: isgr_rds_updated2
 
     script:
     """
