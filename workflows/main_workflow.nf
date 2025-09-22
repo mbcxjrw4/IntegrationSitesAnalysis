@@ -87,7 +87,8 @@ process GeneAnalysis {
         --is ${is_csv} \
         --config ${params.config_file} \
         --plot ${params.outdir}/plots/IS_gene.png \
-        --out ${params.intermediate}/ISGR.rds
+        --out  ${params.outdir}/geneData.tsv\
+        --isgr ${params.intermediate}/ISGR.rds
     """
 }
 
