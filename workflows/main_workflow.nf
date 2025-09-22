@@ -29,9 +29,9 @@ process DataReadInAndPreparation {
     path raw_data
 
     output:
-    path "20bp.plus.region"
-    path "20bp.minus.region"
-    path "IS.csv"
+    path "20bp.plus.region",  emit: plus_region
+    path "20bp.minus.region", emit: minus_region
+    path "IS.csv",            emit: is_csv
 
     script:
     """
@@ -48,13 +48,13 @@ process SequenceLogo {
     conda 'environment.yml'
 
     input:
-    path plus_region
-    path minus_region
-    path is_csv
+    path plus_region from DataReadInAndPreparation.out.plus_region
+    path minus_region from DataReadInAndPreparation.out.minus_region
+    path is_csv from DataReadInAndPreparation.out.is_csv
 
     output:
-    path "logo20bp.png"
-    path "IS.csv"
+    path "logo20bp.png",   emit: logo
+    path "IS.updated.csv", emit: is_csv_updated
 
     script:
     """
@@ -65,7 +65,8 @@ process SequenceLogo {
         --plus ${params.intermediate}/20bp.plus.fa \
         --minus ${params.intermediate}/20bp.minus.fa \
         --is ${is_csv} \
-        --output ${params.outdir}/plots/logo20bp.png
+        --output ${params.outdir}/plots/logo20bp.png \
+        --output_csv ${params.intermediate}/IS.updated.csv
     """
 }
 
@@ -75,12 +76,12 @@ process GeneAnalysis {
     conda 'environment.yml'
 
     input:
-    path is_csv
+    path is_csv from SequenceLogo.out.is_csv_updated
 
     output:
-    path "IS_gene.png"
-    path "ISGR.rds"
-    path "geneData.tsv"
+    path "IS_gene.png",  emit:gene_plot
+    path "ISGR.rds",     emit: isgr_rds
+    path "geneData.tsv", emit: genedata_tsv
 
     script:
     """
@@ -99,12 +100,12 @@ process OpenChromatin {
     conda 'environment.yml'
 
     input:
-    path isgr_rds
+    path isgr_rds from GeneAnalysis.out.isgr_rds_updated
 
     output:
-    path "IS_dnase.png"
-    path "ISGR.rds"
-    path "1kb.region"
+    path "IS_dnase.png", emit: is_dnase_plot
+    path "ISGR.updated.rds",     emit: isge_rds_updated
+    path "1kb.region",   emit: 1kb_region
 
     script:
     """
@@ -112,7 +113,7 @@ process OpenChromatin {
         --isgr ${isgr_rds} \
         --config ${params.config_file} \
         --plot ${params.outdir}/plots/IS_dnase.png \
-        --save ${params.intermediate}
+        --update ${params.intermediate}/ISGR.updated.rds
     """
 }
 
@@ -122,13 +123,13 @@ process GCContent {
     conda 'environment.yml'
 
     input:
-    path isgr_rds
-    path region
+    path isgr_rds from OpenChromatin.out.isge_rds_updated
+    path region from OpenChromatin.out.1kb_region
 
     output:
-    path "GC_content.png"
-    path "integrationSiteData.tsv"
-    path "ISGR.rds"
+    path "GC_content.png",          emit:ge_plot
+    path "integrationSiteData.tsv", emit:is_data_tsv
+    path "ISGR.updated2.rds",                emit: isgr_rds_updated2
 
     script:
     """
@@ -143,7 +144,7 @@ process GCContent {
         --gc ${params.intermediate}/1kb.region.gc \
         --out ${params.outdir}/integrationSiteData.tsv \
         --plot ${params.outdir}/plots/GC_content.png \
-        --save ${params.intermediate}/ISGR.rds
+        --update ${params.intermediate}/ISGR.updated2.rds
     """
 }
 
@@ -153,11 +154,11 @@ process Clonality {
     conda 'environment.yml'
 
     input:
-    path isgr_rds
+    path isgr_rds from GCContent.out.isgr_rds_updated2
 
     output:
-    path "IS_clonality.png"
-    path "clonalityData.tsv"
+    path "IS_clonality.png", emit: is_clonality_plot
+    path "clonalityData.tsv", emit: clonality_data_tsv
 
     script:
     """
