@@ -54,8 +54,8 @@ process SequenceLogo {
 
     script:
     """
-    samtools faidx ${params.genome_fasta} -r ${plus_region} > $20bp.plus.fa
-    samtools faidx ${params.genome_fasta} -r ${minus_region} > $20bp.minus.fa
+    samtools faidx ${params.genome_fasta} -r ${plus_region} > 20bp.plus.fa
+    samtools faidx ${params.genome_fasta} -r ${minus_region} > 20bp.minus.fa
 
     Rscript R/informationContent.R \
         --plus 20bp.plus.fa \
