@@ -175,14 +175,29 @@ process Report {
     conda 'environment.yml'
 
     input:
-    path clonality_data from Clonality.out.clonality_data_tsv
+    path logo_plot from SequenceLogo.out.logo
+    path gene_plot from GeneAnalysis.out.gene_plot
+    path dnase_plot from OpenChromatin.out.is_dnase_plot
+    path gc_content_plot from GCContent.out.gc_plot
+    path clonality_plot from Clonality.out.is_clonality_plot
 
     output:
     path "report.html"
 
     script:
     """
-    Rscript -e "rmarkdown::render('${params.report_rmd}', output_file='report.html')"
+    Rscript -e "
+    rmarkdown::render(
+        '${params.report_rmd}', 
+        output_file='report.html', 
+        params = list(
+            logo20bp_png = ${logo_plot},
+            IS_gene_png = ${gene_plot},
+            IS_dnase_png = ${dnase_plot},
+            GC_content_png = ${gc_content_plot},
+            IS_clonality_png = ${clonality_plot}
+        )
+    )"
     """
     publishDir "${params.outdir}", mode: 'copy'
 }
