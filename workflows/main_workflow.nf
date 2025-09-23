@@ -7,7 +7,7 @@ nextflow.enable.dsl = 2
 params.config_file   = "config/config.yaml"
 params.input         = "input/intSites.tsv"
 params.outdir        = "results"
-params.intermediate  = "intermediate"
+params.debug         = false
 params.genome_fasta  = "${HOME}/path_to_genome/GRCh38.p13.genome.fa"
 params.report_rmd    = "report.Rmd"
 
@@ -22,29 +22,29 @@ Channel.fromPath(params.input).set { raw_input }
 
 // Step 1: Data preparation
 process DataReadInAndPreparation {
-    publishDir "${params.intermediate}", mode: 'copy'
     conda 'environment.yml'
 
     input:
     path raw_data
 
     output:
-    path "20bp.plus.region",  emit: plus_region
-    path "20bp.minus.region", emit: minus_region
-    path "IS.csv",            emit: is_csv
+    path "20bp.plus.region",  emit: plus_region,  temporary: !params.debug
+    path "20bp.minus.region", emit: minus_region, temporary: !params.debug
+    path "IS.csv",            emit: is_csv,       temporary: !params.debug
 
     script:
     """
     Rscript R/dataReadInAndPreparation.R \
         --input ${raw_data} \
-        --outdir ${params.intermediate} \
         --config ${params.config_file}
     """
+    if (params.debug) {
+        publishDir "intermediate", mode: 'copy'
+    }
 }
 
 // Step 2: Sequence logo
 process SequenceLogo {
-    publishDir "${params.outdir}/plots", mode: 'copy'
     conda 'environment.yml'
 
     input:
@@ -54,7 +54,7 @@ process SequenceLogo {
 
     output:
     path "logo20bp.png",   emit: logo
-    path "IS.updated.csv", emit: is_csv_updated
+    path "IS.updated.csv", emit: is_csv_updated, temporary: !params.debug
 
     script:
     """
@@ -62,74 +62,84 @@ process SequenceLogo {
     samtools faidx ${params.genome_fasta} -r ${minus_region} > ${params.intermediate}/20bp.minus.fa
 
     Rscript R/informationContent.R \
-        --plus ${params.intermediate}/20bp.plus.fa \
-        --minus ${params.intermediate}/20bp.minus.fa \
+        --plus 20bp.plus.fa \
+        --minus 20bp.minus.fa \
         --is ${is_csv} \
-        --output ${params.outdir}/plots/logo20bp.png \
-        --update ${params.intermediate}/IS.updated.csv
+        --output logo20bp.png \
+        --update IS.updated.csv
     """
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    if (params.debug) {
+        publishDir "intermediate", mode: 'copy'
+    }
 }
 
 // Step 3: Gene analysis
 process GeneAnalysis {
-    publishDir "${params.outdir}/plots", mode: 'copy'
     conda 'environment.yml'
 
     input:
     path is_csv from SequenceLogo.out.is_csv_updated
 
     output:
-    path "IS_gene.png",  emit: gene_plot
-    path "ISGR.initial.rds", emit: isgr_rds
-    path "geneData.tsv", emit: genedata_tsv
+    path "IS_gene.png",   emit: gene_plot
+    path "ISGR.rds",      emit: isgr_rds,     temporary: !params.debug
+    path "geneData.tsv",  emit: genedata_tsv
 
     script:
     """
     Rscript R/geneAnalysis.R \
         --is ${is_csv} \
         --config ${params.config_file} \
-        --plot ${params.outdir}/plots/IS_gene.png \
-        --out  ${params.outdir}/geneData.tsv\
-        --isgr ${params.intermediate}/ISGR.rds
+        --plot IS_gene.png \
+        --out  geneData.tsv \
+        --isgr ISGR.rds
     """
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
+    if (params.debug) {
+        publishDir "intermediate", mode: 'copy'
+    }
 }
 
 // Step 4: Open chromatin
 process OpenChromatin {
-    publishDir "${params.outdir}/plots", mode: 'copy'
     conda 'environment.yml'
 
     input:
-    path isgr_rds from GeneAnalysis.out.isgr_rds_updated
+    path isgr_rds from GeneAnalysis.out.isgr_rds
 
     output:
-    path "IS_dnase.png", emit: is_dnase_plot
-    path "ISGR.openChromatin.rds", emit: isge_rds_updated
-    path "1kb.region",   emit: 1kb_region
+    path "IS_dnase.png",  emit: is_dnase_plot
+    path "ISGR.rds",      emit: isgr_rds_updated, temporary: !params.debug
+    path "1kb.region",    emit: region,           temporary: !params.debug
 
     script:
     """
     Rscript R/openChromatin.R \
         --isgr ${isgr_rds} \
         --config ${params.config_file} \
-        --plot ${params.outdir}/plots/IS_dnase.png \
-        --update ${params.intermediate}/ISGR.updated.rds
+        --plot IS_dnase.png \
+        --update ISGR.rds
     """
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    if (params.debug) {
+        publishDir "intermediate", mode: 'copy'
+    }
 }
 
 // Step 5: GC content
 process GCContent {
-    publishDir "${params.outdir}/plots", mode: 'copy'
     conda 'environment.yml'
 
     input:
-    path isgr_rds from OpenChromatin.out.isge_rds_updated
-    path region from OpenChromatin.out.1kb_region
+    path isgr_rds from OpenChromatin.out.isgr_rds_updated
+    path region   from OpenChromatin.out.region
 
     output:
-    path "GC_content.png",          emit:ge_plot
-    path "integrationSiteData.tsv", emit:is_data_tsv
-    path "ISGR.gcContent.rds",      emit: isgr_rds_updated2
+    path "GC_content.png",          emit: gc_plot
+    path "integrationSiteData.tsv", emit: is_data_tsv
+    path "ISGR.rds",                emit: isgr_rds_updated2, temporary: !params.debug
 
     script:
     """
@@ -141,16 +151,20 @@ process GCContent {
 
     Rscript R/gcContent.R \
         --isgr ${isgr_rds} \
-        --gc ${params.intermediate}/1kb.region.gc \
-        --out ${params.outdir}/integrationSiteData.tsv \
-        --plot ${params.outdir}/plots/GC_content.png \
-        --update ${params.intermediate}/ISGR.updated2.rds
+        --gc 1kb.region.gc \
+        --out integrationSiteData.tsv \
+        --plot GC_content.png \
+        --update ISGR.rds
     """
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
+    if (params.debug) {
+        publishDir "intermediate", mode: 'copy'
+    }
 }
 
 // Step 6: Clonality
 process Clonality {
-    publishDir "${params.outdir}/plots", mode: 'copy'
     conda 'environment.yml'
 
     input:
@@ -165,18 +179,22 @@ process Clonality {
     Rscript R/clonality.R \
         --isgr ${isgr_rds} \
         --config ${params.config_file} \
-        --plot ${params.outdir}/plots/IS_clonality.png \
-        --out ${params.outdir}/clonalityData.tsv
+        --plot IS_clonality.png \
+        --out clonalityData.tsv
     """
+    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
+    if (params.debug) {
+        publishDir "intermediate", mode: 'copy'
+    }
 }
 
 // Step 7: Final report
 process Report {
-    publishDir "${params.outdir}", mode: 'copy'
     conda 'environment.yml'
 
     input:
-    path clonality_data
+    path clonality_data from Clonality.out.clonality_data_tsv
 
     output:
     path "report.html"
@@ -185,6 +203,7 @@ process Report {
     """
     Rscript -e "rmarkdown::render('${params.report_rmd}', output_file='report.html')"
     """
+    publishDir "${params.outdir}", mode: 'copy'
 }
 
 // ----------------------
