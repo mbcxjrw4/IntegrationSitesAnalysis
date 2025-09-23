@@ -28,9 +28,9 @@ process DataReadInAndPreparation {
     path raw_data
 
     output:
-    path "20bp.plus.region",  emit: plus_region,  temporary: !params.debug
-    path "20bp.minus.region", emit: minus_region, temporary: !params.debug
-    path "IS.csv",            emit: is_csv,       temporary: !params.debug
+    path "20bp.plus.region",  emit: plus_region
+    path "20bp.minus.region", emit: minus_region
+    path "IS.csv",            emit: is_csv
 
     script:
     """
@@ -54,7 +54,7 @@ process SequenceLogo {
 
     output:
     path "logo20bp.png",   emit: logo
-    path "IS.updated.csv", emit: is_csv_updated, temporary: !params.debug
+    path "IS.updated.csv", emit: is_csv_updated
 
     script:
     """
@@ -68,9 +68,10 @@ process SequenceLogo {
         --output logo20bp.png \
         --update IS.updated.csv
     """
-    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png"
     if (params.debug) {
-        publishDir "intermediate", mode: 'copy'
+        publishDir "intermediate", mode: 'copy', pattern: "*.csv"
+        publishDir "intermediate", mode: 'copy', pattern: "*.fa"
     }
 }
 
@@ -83,7 +84,7 @@ process GeneAnalysis {
 
     output:
     path "IS_gene.png",   emit: gene_plot
-    path "ISGR.rds",      emit: isgr_rds,     temporary: !params.debug
+    path "ISGR.rds",      emit: isgr_rds
     path "geneData.tsv",  emit: genedata_tsv
 
     script:
@@ -95,7 +96,7 @@ process GeneAnalysis {
         --out  geneData.tsv \
         --isgr ISGR.rds
     """
-    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png" 
     publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
     if (params.debug) {
         publishDir "intermediate", mode: 'copy'
@@ -111,8 +112,8 @@ process OpenChromatin {
 
     output:
     path "IS_dnase.png",  emit: is_dnase_plot
-    path "ISGR.rds",      emit: isgr_rds_updated, temporary: !params.debug
-    path "1kb.region",    emit: region,           temporary: !params.debug
+    path "ISGR.rds",      emit: isgr_rds_updated
+    path "1kb.region",    emit: region
 
     script:
     """
@@ -139,7 +140,7 @@ process GCContent {
     output:
     path "GC_content.png",          emit: gc_plot
     path "integrationSiteData.tsv", emit: is_data_tsv
-    path "ISGR.rds",                emit: isgr_rds_updated2, temporary: !params.debug
+    path "ISGR.rds",                emit: isgr_rds_updated2
 
     script:
     """
