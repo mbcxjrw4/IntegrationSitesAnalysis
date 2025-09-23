@@ -7,7 +7,6 @@ nextflow.enable.dsl = 2
 params.config_file   = "config/config.yaml"
 params.input         = "input/intSites.tsv"
 params.outdir        = "results"
-params.debug         = false
 params.genome_fasta  = "${HOME}/path_to_genome/GRCh38.p13.genome.fa"
 params.report_rmd    = "report.Rmd"
 
@@ -38,9 +37,6 @@ process DataReadInAndPreparation {
         --input ${raw_data} \
         --config ${params.config_file}
     """
-    if (params.debug) {
-        publishDir "intermediate", mode: 'copy'
-    }
 }
 
 // Step 2: Sequence logo
@@ -58,8 +54,8 @@ process SequenceLogo {
 
     script:
     """
-    samtools faidx ${params.genome_fasta} -r ${plus_region} > ${params.intermediate}/20bp.plus.fa
-    samtools faidx ${params.genome_fasta} -r ${minus_region} > ${params.intermediate}/20bp.minus.fa
+    samtools faidx ${params.genome_fasta} -r ${plus_region} > $20bp.plus.fa
+    samtools faidx ${params.genome_fasta} -r ${minus_region} > $20bp.minus.fa
 
     Rscript R/informationContent.R \
         --plus 20bp.plus.fa \
@@ -69,10 +65,6 @@ process SequenceLogo {
         --update IS.updated.csv
     """
     publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png"
-    if (params.debug) {
-        publishDir "intermediate", mode: 'copy', pattern: "*.csv"
-        publishDir "intermediate", mode: 'copy', pattern: "*.fa"
-    }
 }
 
 // Step 3: Gene analysis
@@ -98,9 +90,6 @@ process GeneAnalysis {
     """
     publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png" 
     publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
-    if (params.debug) {
-        publishDir "intermediate", mode: 'copy'
-    }
 }
 
 // Step 4: Open chromatin
@@ -124,9 +113,6 @@ process OpenChromatin {
         --update ISGR.rds
     """
     publishDir "${params.outdir}/plots", mode: 'copy'
-    if (params.debug) {
-        publishDir "intermediate", mode: 'copy'
-    }
 }
 
 // Step 5: GC content
@@ -159,9 +145,6 @@ process GCContent {
     """
     publishDir "${params.outdir}/plots", mode: 'copy'
     publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
-    if (params.debug) {
-        publishDir "intermediate", mode: 'copy'
-    }
 }
 
 // Step 6: Clonality
@@ -185,9 +168,6 @@ process Clonality {
     """
     publishDir "${params.outdir}/plots", mode: 'copy'
     publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
-    if (params.debug) {
-        publishDir "intermediate", mode: 'copy'
-    }
 }
 
 // Step 7: Final report
