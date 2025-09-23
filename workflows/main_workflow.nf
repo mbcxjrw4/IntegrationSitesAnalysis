@@ -11,11 +11,6 @@ params.genome_fasta  = "${HOME}/path_to_genome/GRCh38.p13.genome.fa"
 params.report_rmd    = "report.Rmd"
 
 // ----------------------
-// Channels
-// ----------------------
-Channel.fromPath(params.input).set { raw_input }
-
-// ----------------------
 // Processes
 // ----------------------
 
@@ -203,7 +198,8 @@ process Report {
 // Workflow definition
 // ----------------------
 workflow {
-    DataReadInAndPreparation(raw_input) \
+    input_ch = Channel.fromPath(params.input)
+    DataReadInAndPreparation(input_ch) \
         | SequenceLogo \
         | GeneAnalysis \
         | OpenChromatin \
