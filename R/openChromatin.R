@@ -83,9 +83,9 @@ if (!file.exists(opt$plot)) {
 saveRDS(IS.GR, file = opt$update)
 	
 # Calculate GC content in 1 kb bins
-if (!file.exists(paste0(opt$out, "/1kb.region"))) {
+if (!file.exists("/1kb.region")) {
 	regions.1kb <- paste0(as.character(seqnames(IS.GR)), ":", as.integer(start(IS.GR))-499, "-",  as.integer(end(IS.GR))+500 )
-	writeLines(regions.1kb, paste0(opt$out, "/1kb.region"))
+	writeLines(regions.1kb, "1kb.region")
 }
 
 message("Open chromatin analysis complete ✅")
