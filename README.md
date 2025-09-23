@@ -21,7 +21,6 @@ A Nextflow-based bioinformatics pipeline to analyse lentiviral vector (LV) integ
 │   ├── config.yaml        # Project parameters
 │   └── load_config.R      # Load YAML config in R scripts
 ├── input/                  # Raw input data (intSites.tsv)
-├── intermediate/           # Temporary files generated during workflow
 ├── resource/               # Reference files used in analyses
 ├── results/                # Final outputs and plots
 ├── environment.yml         # Conda environment for reproducibility
