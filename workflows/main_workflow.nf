@@ -134,7 +134,7 @@ process GCContent {
     awk 'BEGIN {IGNORECASE=1;a=0;c=0;g=0;t=0;}
          {if(NR==1)next;a+=gsub("A","");c+=gsub("C","");g+=gsub("G","");t+=gsub("T","");}
          />/ {print (c+g)/(a+c+g+t);a=0;c=0;g=0;t=0;next;}
-         END {print (c+g)/(a+c+g+t);}' > ${params.intermediate}/1kb.region.gc
+         END {print (c+g)/(a+c+g+t);}' > 1kb.region.gc
 
     Rscript R/gcContent.R \
         --isgr ${isgr_rds} \
