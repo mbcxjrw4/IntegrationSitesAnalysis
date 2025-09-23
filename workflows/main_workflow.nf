@@ -175,11 +175,8 @@ process Report {
     conda 'environment.yml'
 
     input:
-    path logo_plot from SequenceLogo.out.logo
-    path gene_plot from GeneAnalysis.out.gene_plot
-    path dnase_plot from OpenChromatin.out.is_dnase_plot
-    path gc_content_plot from GCContent.out.gc_plot
-    path clonality_plot from Clonality.out.is_clonality_plot
+    // A single input declaration for a tuple containing all the files
+    tuple path(logo_plot), path(gene_plot), path(dnase_plot), path(gc_content_plot), path(clonality_plot)
 
     output:
     path "report.html"
@@ -191,11 +188,11 @@ process Report {
         '${params.report_rmd}', 
         output_file='report.html', 
         params = list(
-            logo20bp_png = ${logo_plot},
-            IS_gene_png = ${gene_plot},
-            IS_dnase_png = ${dnase_plot},
-            GC_content_png = ${gc_content_plot},
-            IS_clonality_png = ${clonality_plot}
+            logo20bp_png = ${logo_plot.baseName},
+            IS_gene_png = ${gene_plot.baseName},
+            IS_dnase_png = ${dnase_plot.baseName},
+            GC_content_png = ${gc_content_plot.baseName},
+            IS_clonality_png = ${clonality_plot.baseName}
         )
     )"
     """
@@ -211,7 +208,17 @@ workflow {
         | GeneAnalysis \
         | OpenChromatin \
         | GCContent \
-        | Clonality \
-        | Report
+        | Clonality 
+
+    // Combine all outputs into a single channel containing a tuple
+    report_inputs = SequenceLogo.out.logo
+        .mix(GeneAnalysis.out.gene_plot)
+        .mix(OpenChromatin.out.is_dnase_plot)
+        .mix(GCContent.out.gc_plot)
+        .mix(Clonality.out.is_clonality_plot)
+        .collect()
+
+    // Pass the single tuple to the Report process
+    Report(report_inputs)
 }
 
