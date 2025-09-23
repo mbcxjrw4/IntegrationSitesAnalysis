@@ -107,7 +107,7 @@ process OpenChromatin {
         --plot IS_dnase.png \
         --update ISGR.rds
     """
-    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png"
 }
 
 // Step 5: GC content
@@ -138,7 +138,7 @@ process GCContent {
         --plot GC_content.png \
         --update ISGR.rds
     """
-    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png"
     publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
 }
 
@@ -161,7 +161,7 @@ process Clonality {
         --plot IS_clonality.png \
         --out clonalityData.tsv
     """
-    publishDir "${params.outdir}/plots", mode: 'copy'
+    publishDir "${params.outdir}/plots", mode: 'copy', pattern: "*.png"
     publishDir "${params.outdir}",       mode: 'copy', pattern: "*.tsv"
 }
 
