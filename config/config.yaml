@@ -5,6 +5,7 @@ resources:
   tpm: "resource/fraietta_TPM.tsv"
   dnase: "resource/wgEncodeRegDnaseClustered.txt.gz"
   bed: "resource/GRCh38.p13_1Mb_geneTPM.bed"
+  logo: "resource/sequenceLogo_Wang.png"
 paths:
   intermediate: "intermediate"
   output: "results"
