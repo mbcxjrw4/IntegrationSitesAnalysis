@@ -94,7 +94,7 @@ if (!file.exists(opt$plot)) {
 	
 if (!file.exists(opt$out)) {
 	write.table(
-		as.data.frame(hg38_1mb), "results/clonalityData.tsv",
+		as.data.frame(hg38_1mb), opt$out,
 		sep = "\t", col.names = T, row.names = F, quote = F, na = ""
 	)
 }
