@@ -26,8 +26,6 @@ source("config/load_config.R")  # defines `cfg`
 # Example usage
 # ---------------------------
 message("Running gene analysis...")
-message("Config file: ", opt$config)
-message("Patient ID: ", cfg$patient_id)
 
 if (!is.null(opt$is)) {
   message("Input file: ", opt$is)
