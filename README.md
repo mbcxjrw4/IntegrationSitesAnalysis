@@ -50,7 +50,6 @@ nextflow run workflows/main_workflow.nf --config config/config.yaml
 ```bash
 input: "input/intSites.tsv"
 outdir: "results"
-intermediate: "intermediate"
 genome_fasta: "/path/to/GRCh38.p13.genome.fa"
 report_rmd: "report.Rmd"
 patient_id: "Patient001"
