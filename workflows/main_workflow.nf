@@ -7,7 +7,7 @@ nextflow.enable.dsl = 2
 params.config_file   = "config/config.yaml"
 params.input         = "input/intSites.tsv"
 params.outdir        = "results"
-params.genome_fasta  = "${HOME}/path_to_genome/GRCh38.p13.genome.fa"
+params.genome_fasta  = "/path_to_genome/GRCh38.p13.genome.fa"
 params.report_rmd    = "report.Rmd"
 
 // ----------------------
@@ -183,11 +183,11 @@ process Report {
         '${params.report_rmd}', 
         output_file='report.html', 
         params = list(
-            logo20bp_png = ${logo_plot.baseName},
-            IS_gene_png = ${gene_plot.baseName},
-            IS_dnase_png = ${dnase_plot.baseName},
-            GC_content_png = ${gc_content_plot.baseName},
-            IS_clonality_png = ${clonality_plot.baseName}
+            logo20bp_png = '${logo_plot.baseName}',
+            IS_gene_png = '${gene_plot.baseName}',
+            IS_dnase_png = '${dnase_plot.baseName}',
+            GC_content_png = '${gc_content_plot.baseName}',
+            IS_clonality_png = '${clonality_plot.baseName}'
         )
     )"
     """
